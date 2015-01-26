@@ -1,0 +1,18 @@
+Ext.application({
+    launch: function() {
+        Ext.Viewport.add({
+            xtype: 'panel',
+            items: [
+            {
+                xtype: 'label',
+                html: 'Hello,world!'
+            },{
+                xtype: 'button',
+                text: 'ボタンです'
+            },{
+                xtype: 'textfield',
+                placeHolder: 'テキストボックスです'
+            }]
+        });
+    }
+});
