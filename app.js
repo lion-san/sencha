@@ -37,6 +37,9 @@ Ext.application({
                  iconMask: true,
                  badgeText: '2',
                  ui: 'action',
+                 scrollable: {
+                   direction: 'horizontal'
+                 },
       
                  // ボタンにイベントを設定
                  handler: function() {

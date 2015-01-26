@@ -31,17 +31,15 @@ Ext.application({
              },
             {
               xtype: 'toolbar',
-              layout: {
-                type: 'vbox',
-                pack:'center',
-           　   align: 'center'
-              },
             　items: [{
             　   xtype: 'button',
                  iconCls: 'add',
                  iconMask: true,
                  badgeText: '2',
                  ui: 'action',
+                 scrollable: {
+                   direction: 'horizontal'
+                 }
       
                  // ボタンにイベントを設定
                  handler: function() {
