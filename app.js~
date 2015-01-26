@@ -11,51 +11,59 @@ Ext.application({
               xtype: 'label',
               html: 'Program mode'
             },
-            {
-              xtype: 'button',
-              text: 'Push Next View',
-                  
-              // ボタンにイベントを設定
-              handler: function() {
-
-                // このコンポーネントの2つ上の navigationview で定義されたメソッド
-                this.parent.parent.push({
-                  xtype: 'panel',
-                  title: 'Second View',
-                  items: [{
-                    xtype: 'label',
-                    html: 'This is Second View' // 画面遷移後にナビゲーションバーに表示する文字列
-                   }]
-                });
-               }
-             },
-            {
-              xtype: 'container',
-            　items: [{
+            {//Upper
+              xtype: 'panel',
+              layout: 'hbox',
+              height: '30%',
+              scrollable: true,
+            　items: [
+              {
             　   xtype: 'button',
-                 iconCls: 'add',
+                 text: 'Add',
+                 /*iconCls: 'add',
                  iconMask: true,
-                 badgeText: '2',
+                 badgeText: '2',*/
+                 height: '50%',
                  ui: 'action',
-                 scrollable: {
-                   direction: 'horizontal'
-                 },
       
                  // ボタンにイベントを設定
                  handler: function() {
-
-                  this.parent.add({
-               　   xtype: 'button',
-                    iconCls: 'add',
-                    iconMask: true,
-                    ui: 'action',
-                    // ボタンにイベントを設定
-                    handler: function() {
-                        this.parent.push({
-                    });}
-                  });
+                   //add_tapped(this); 
+                   var obj = this;
+                   if( !this.picker) {
+                     this.picker = Ext.Viewport.add({
+                       xtype: 'picker',
+                       slots: {
+                         name: 'select function',
+                         title: 'Function',
+                         data: [
+                           {text: 'Say', value: 'Say'},
+                           {text: 'Saw', value: 'Saw'},
+                           {text: 'Move', value: 'Move'}
+                         ]
+                       },
+                       listeners : {
+                         change : function (picker, value) {
+                           //alert(value);
+                           add_tapped(obj, value);
+                         }
+                       }
+                     });
+                   }
+                   this.picker.show();
                  }
-              }]
+              }
+             ]
+            },
+            {//Lower
+              xtype: 'panel',
+              layout: 'vbox',
+              height: '70%',
+              items: {
+                html: 'Lower Panel',
+                height: '100%',
+                style: 'background-color: #5E99CC;'
+              }
             }
           ]//end item
           }]//navigationview item
@@ -63,3 +71,33 @@ Ext.application({
   }
 });
 
+//Functions
+/*var first_add_tapped = function(obj){
+  obj.parent.add({
+    xtype: 'button',
+    iconCls: 'add',
+    iconMask: true,
+    ui: 'action',
+    // ボタンにイベントを設定
+    handler: function() {
+      test(this);
+    }});
+}*/
+
+var picker = function(){
+
+}
+
+var add_tapped = function(obj, value){
+    //alert("hoge");
+    obj.parent.add({
+    xtype: 'button',
+    text: value,
+    //iconCls: 'add',
+    //iconMask: true,
+    ui: 'action',
+    // ボタンにイベントを設定
+    handler: function() {
+      add_tapped(obj);
+    }});
+}
