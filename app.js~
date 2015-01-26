@@ -30,7 +30,7 @@ Ext.application({
                }
              },
             {
-              xtype: 'toolbar',
+              xtype: 'container',
             　items: [{
             　   xtype: 'button',
                  iconCls: 'add',
@@ -39,7 +39,7 @@ Ext.application({
                  ui: 'action',
                  scrollable: {
                    direction: 'horizontal'
-                 }
+                 },
       
                  // ボタンにイベントを設定
                  handler: function() {

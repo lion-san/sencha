@@ -30,7 +30,8 @@ Ext.application({
                }
              },
             {
-              xtype: 'toolbar',
+              xtype: 'container',
+              layout: 'hbox',
             Å@items: [{
             Å@   xtype: 'button',
                  iconCls: 'add',
