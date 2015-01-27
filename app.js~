@@ -1,37 +1,7 @@
 var addBtn;
 
 //Action追加ボタン「＋」
-var addActionBtn = Ext.create('Ext.Button', {
-      iconCls: 'add',
-      iconMask: true,
-      height: '66px'
-  /*actionFloatPanel = Ext.create('Ext.Panel', {
-    html: 'Float',
-    left: 0,
-    padding: 10
-  });//.showBy(addActionBtn);*/
-});
-
-var hoge = function(){
-  alert("hoge");
-}
-addActionBtn.on('tap', hoge, this);
-var hoge2 = addActionBtn.getListeners();
-
-//ActionPanel
-var actionPanel = Ext.create('Ext.Panel', {
-  layout: 'vbox',
-  height: '70%',
-  scrollable: true,
-  items: [
-  {
-    html: 'Action',
-    //height: '100%',
-    style: 'background-color: #5E99CC;'
-  }
-  ]
-});
-
+var currentAddActionBtn;
 
 //ActionFloatPanel
 var actionFloatPanel;/* = Ext.create('Ext.Panel', {
@@ -67,6 +37,7 @@ Ext.application({
                  text: 'Add',
                  iconCls: 'add',
                  iconMask: true,
+                 margin: 5,
                  //badgeText: '2',
                  height: '44px',
                  ui: 'round',
@@ -96,8 +67,120 @@ Ext.application({
               }
              ]
             },
-            //下段のレイアウト
-            actionPanel
+//下段のレイアウト
+{
+//ActionPanel
+  xtype: 'panel',
+  layout: 'vbox',
+  height: '70%',
+  scrollable: true,
+  items: [
+  {
+    html: 'Action',
+    style: 'background-color: #5E99CC;'
+  },
+  {
+//Action追加ボタン「＋」
+      xtype: 'button',
+      hidden: true, //初期は隠す
+      iconCls: 'add',
+      iconMask: true,
+      height: '66px',
+      handler: function() {
+        
+        //Floating panel
+        actionFloatPanel = Ext.create('Ext.Panel', {
+        centered: true,
+        width: '100%',
+        items: [
+        {//--------------------------
+            defaults: {
+              xtype: 'button',
+              margin: 5,
+              width: '44px',
+              height: '44px',
+              iconMask: true
+            },
+            layout: 'hbox',
+            items: [ 
+                { iconCls: 'action' },//1
+                { iconCls: 'add' },
+                { iconCls: 'arrow_down' },
+                { iconCls: 'arrow_left' },
+                { iconCls: 'compose' },
+           ] 
+        },//--------------------------
+        {//---------------------------
+            defaults: {
+              xtype: 'button',
+              margin: 5,
+              width: '44px',
+              height: '44px',
+              iconMask: true
+            },
+            layout: 'hbox',
+            items: [ 
+                { iconCls: 'compose' },
+                { iconCls: 'delete' },
+                { iconCls: 'organize' },
+                { iconCls: 'refresh' },
+                { iconCls: 'reply' },
+           ] 
+        },//--------------------------
+        {//---------------------------
+            defaults: {
+              xtype: 'button',
+              margin: 5,
+              width: '44px',
+              height: '44px',
+              iconMask: true
+            },
+            layout: 'hbox',
+            items: [ 
+                { iconCls: 'search' },
+                { iconCls: 'settings' },
+                { iconCls: 'star' },
+                { iconCls: 'trash' },
+                { iconCls: 'maps' },
+           ] 
+        },//----------------------------
+        {//-----------------------------
+            defaults: {
+              xtype: 'button',
+              margin: 5,
+              width: '44px',
+              height: '44px',
+              iconMask: true
+            },
+            layout: 'hbox',
+            items: [ 
+                { iconCls: 'locate' },
+                { iconCls: 'home' },
+                { xtype: 'spacer' },
+                { xtype: 'spacer' },
+                { xtype: 'spacer' }
+           ] 
+       },//--------------------------------
+       {
+            xtype: 'toolbar',
+            docked: 'top',
+            defaults: {
+                iconMask: true
+            },
+            items: [
+                { xtype: 'spacer' },
+                { iconCls: 'delete', left: '85%', handler: function() {actionFloatPanel.hide()} },
+                { xtype: 'spacer' }
+            ]
+        }
+        ]//item
+        });
+        //Floatパネルの表示
+        this.parent.parent.add(actionFloatPanel);
+     }
+  }
+  ]
+}
           ]//end item
           }]//navigationview item
     });//Ext.Viewport
@@ -105,6 +188,9 @@ Ext.application({
 });
 
 //Functions
+/**
+ * 
+ */
 var add_tapped = function(obj, value){
     //alert("hoge");
     //選択したボタンの描画
@@ -113,6 +199,7 @@ var add_tapped = function(obj, value){
     text: value.action,//選択した値のボタンを生成
     height: '44px',
     ui: 'action',
+    margin: 5,
     // ボタンにイベントを設定
     handler: function() {
       add_tapped(obj);
@@ -127,6 +214,7 @@ var add_tapped = function(obj, value){
                  //badgeText: '2',
                  height: '44px',
                  ui: 'round',
+                 margin: 5,
       
                  // ボタンにイベントを設定
                  handler: function() {
@@ -155,25 +243,11 @@ var add_tapped = function(obj, value){
     //イベントトリガーのaddBtnの削除
     obj.parent.remove(addBtn);
 
-    //ActionBtnの生成
-/*      addAction = Ext.create('Ext.Button', {
-      iconCls: 'add',
-      iconMask: true,
-      height: '66px'
-      });*/
-    actionPanel.add(addActionBtn);
-
-  actionFloatPanel = Ext.create('Ext.Panel', {
-    html: 'Float',
-    left: 0,
-    padding: 10
-  });//.showBy(addActionBtn);
+    //ActionBtnの表示
+    //
 }
 
-//actionBtn
-var createActionBtn = function(){
-}
-
+//リスト
 var makeList = function(){
   var json = [             {text: events.say, value: events.say},
                            {text: events.saw, value: events.saw},
@@ -190,3 +264,23 @@ var events = {
   "pan": "手をたたく",
   "move": "動作を検知"
 };
+
+
+/**
+ * テストコード
+*/
+var myPanel = function(){
+  return Ext.create('Ext.Panel', {
+  items:  [
+    {xtype: 'button',
+      text: 'TEST!!!!',
+      height: '66px',
+      enable: true,
+      initialize: function(){alert("hoge");}}
+    ]
+  });
+}
+var hoge = function(){
+  alert("hoge");
+}
+
