@@ -1,4 +1,5 @@
 var addBtn;
+var buttons;
 
 //Action追加ボタン「＋」
 var currentAddActionBtn;
@@ -82,7 +83,8 @@ Ext.application({
   {
 //Action追加ボタン「＋」
       xtype: 'button',
-      //hidden: true, //初期は隠す
+      id: 'plus0',
+      hidden: true, //初期は隠す
       iconCls: 'add',
       iconMask: true,
       height: '66px',
@@ -244,7 +246,11 @@ var add_tapped = function(obj, value){
     obj.parent.remove(addBtn);
 
     //ActionBtnの表示
-    //
+    buttons  = Ext.ComponentQuery.query('button');
+    var plus = getObjectById(buttons, 'plus0');
+    alert(plus.id);
+    plus.show();
+    
 }
 
 //リスト
@@ -265,22 +271,11 @@ var events = {
   "move": "動作を検知"
 };
 
-
-/**
- * テストコード
-*/
-var myPanel = function(){
-  return Ext.create('Ext.Panel', {
-  items:  [
-    {xtype: 'button',
-      text: 'TEST!!!!',
-      height: '66px',
-      enable: true,
-      initialize: function(){alert("hoge");}}
-    ]
-  });
+var getObjectById = function (items, id){
+  var i;
+  for(i = 0; i < items.length; i++){
+    if(items[i].id == id)
+	   return items[i];
+  }
+  return null;
 }
-var hoge = function(){
-  alert("hoge");
-}
-
