@@ -72,6 +72,7 @@ Ext.application({
 {
 //ActionPanel
   xtype: 'panel',
+  id: 'actionPanel',
   layout: 'vbox',
   height: '70%',
   scrollable: true,
@@ -102,10 +103,13 @@ Ext.application({
               width: '44px',
               height: '44px',
               iconMask: true
+              ,handler: function() {
+	        actionBtn_tapped(this);
+	      }
             },
             layout: 'hbox',
             items: [ 
-                { iconCls: 'action' },//1
+                { iconCls: 'action', id: 'speak', text: 'speak'},
                 { iconCls: 'add' },
                 { iconCls: 'arrow_down' },
                 { iconCls: 'arrow_left' },
@@ -119,6 +123,9 @@ Ext.application({
               width: '44px',
               height: '44px',
               iconMask: true
+              ,handler: function() {
+	        actionBtn_tapped(this);
+	      }
             },
             layout: 'hbox',
             items: [ 
@@ -136,6 +143,9 @@ Ext.application({
               width: '44px',
               height: '44px',
               iconMask: true
+              ,handler: function() {
+	        actionBtn_tapped(this);
+	      }
             },
             layout: 'hbox',
             items: [ 
@@ -153,6 +163,9 @@ Ext.application({
               width: '44px',
               height: '44px',
               iconMask: true
+              ,handler: function() {
+	        actionBtn_tapped(this);
+	      }
             },
             layout: 'hbox',
             items: [ 
@@ -163,7 +176,7 @@ Ext.application({
                 { xtype: 'spacer' }
            ] 
        },//--------------------------------
-       {
+       {//Cancel button
             xtype: 'toolbar',
             docked: 'top',
             defaults: {
@@ -189,9 +202,46 @@ Ext.application({
   }
 });
 
+
+//-------------------------------------------------------
 //Functions
+//-------------------------------------------------------
+
 /**
- * 
+ * actionBtn_tapped
+ */
+var actionBtn_tapped = function(obj){
+
+  //Action Mode
+  switch (obj.id){
+    case "speak":
+      alert(obj.id);
+      //Add ActionItem
+      buttons  = Ext.ComponentQuery.query('panel');
+      var actionPanel = getObjectById(buttons, 'actionPanel');
+      actionPanel.add(make_actionBtn(obj.id));
+      actionFloatPanel.hide();
+      break;
+
+    default:
+      alert(obj.id);
+      break;
+  }
+}
+
+
+/**
+ * actionBtn_tapped
+ */
+var make_actionBtn = function(id){
+  var newBtn = Ext.create('Ext.Button', {
+    text: id 
+  });
+}
+
+
+/**
+ * add_tapped
  */
 var add_tapped = function(obj, value){
     //alert("hoge");
@@ -209,7 +259,7 @@ var add_tapped = function(obj, value){
 
     //Add Buttonの再描画
     obj.parent.add({
-             　   xtype: 'button',
+             　  xtype: 'button',
                  text: 'Add',
                  iconCls: 'add',
                  iconMask: true,
@@ -248,12 +298,14 @@ var add_tapped = function(obj, value){
     //ActionBtnの表示
     buttons  = Ext.ComponentQuery.query('button');
     var plus = getObjectById(buttons, 'plus0');
-    alert(plus.id);
     plus.show();
     
 }
 
-//リスト
+/**
+ * makeList
+ * Pickers lists
+ */
 var makeList = function(){
   var json = [             {text: events.say, value: events.say},
                            {text: events.saw, value: events.saw},
@@ -263,6 +315,7 @@ var makeList = function(){
   return json;
 }
 
+
 //Valueとイベントのマップ
 var events = { 
   "say": "音声を検知",
@@ -271,6 +324,11 @@ var events = {
   "move": "動作を検知"
 };
 
+
+/**
+ * getObjectById 
+ * Ext.ComponentQuery.query('button'); De Tukau
+ */
 var getObjectById = function (items, id){
   var i;
   for(i = 0; i < items.length; i++){
