@@ -80,7 +80,7 @@ var createEventAddBtn = function(){
                  ui: 'round',
                  margin: 5,
       
-                 // ボタンにイベントを設定
+                 // ボタンにイベントをtextfield設定
                  handler: function() {
                    var obj = this;
                    addBtn = this;
@@ -130,11 +130,11 @@ var createActionFloatPanel = function(){
             },
             layout: 'hbox',
             items: [ 
-                { iconCls: 'action', id: 'speak', text: 'SP'},
-                { iconCls: 'add' },
-                { iconCls: 'arrow_down' },
-                { iconCls: 'arrow_left' },
-                { iconCls: 'compose' },
+                { iconCls: 'info', id: 'talk', text: 'SP'},
+                { iconCls: 'user', id: 'camera'},
+                { iconCls: 'time', id: 'wait'},
+                { iconCls: 'search' },
+                { iconCls: 'locale' },
            ] 
         },//--------------------------
        {//Cancel button
@@ -282,14 +282,28 @@ var eventBtnTapped = function(actionPanelId){
 /**
  * actionBtnTapped
  */
+var actionStack = new Array();
 var actionBtnTapped = function(obj){
+
+  //Action Stackに追加
+
 
   //Action Mode
   switch (obj.id){
-    case "speak":
+    case "talk":
       //alert(obj.id);
       //Add ActionItem
-      currentActionPanel.add(addActionBtn(obj.id));
+      naviView.push(programingTalk(obj.id));
+      actionFloatPanel.hide();
+      break;
+
+    case "camera":
+      addActionBtn("写真を撮る");
+      actionFloatPanel.hide();
+      break;
+
+    case "wait":
+      naviView.push(programingWait(obj.id));
       actionFloatPanel.hide();
       break;
 
@@ -298,6 +312,56 @@ var actionBtnTapped = function(obj){
       break;
   }
 }
+//sub function
+var programingTalk = function(id){
+  var panel = Ext.create('Ext.Panel', {
+    title: 'I can talk',
+    items: [
+      {xtype: 'label', html: 'ここにメッセージを入力してね。'},
+      {xtype: 'textfield', id:'talktext'},
+      {xtype: 'button', text: '登録', ui: 'action',
+        handler: function() {//登録ボタンを押したら
+          //入力値の取得
+          var objs  = Ext.ComponentQuery.query('textfield');
+          var obj = getObjectById(objs, 'talktext');
+          var input = obj.getValue();
+
+          //ボタンを生成して、戻る
+          currentActionPanel.add(addActionBtn("話す [" + input + "]"));
+          naviView.pop();
+        }
+      }
+    ]
+  });
+
+  return panel;
+}
+
+//sub function
+var programingWait = function(id){
+  var panel = Ext.create('Ext.Panel', {
+    title: 'I am waiting ',
+    items: [
+      {xtype: 'label', html: '何秒待てばいい？'},
+      {xtype: 'textfield', id:'waittime'},
+      {xtype: 'button', text: '登録', ui: 'action',
+        handler: function() {//登録ボタンを押したら
+          //入力値の取得
+          var objs  = Ext.ComponentQuery.query('textfield');
+          var obj = getObjectById(objs, 'waittime');
+          var input = obj.getValue();
+
+          //ボタンを生成して、戻る
+          currentActionPanel.add(addActionBtn("[" + input + "] 秒待つ"));
+          naviView.pop();
+        }
+      }
+    ]
+  });
+
+  return panel;
+}
+
 
 
 /**
