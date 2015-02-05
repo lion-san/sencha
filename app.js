@@ -131,10 +131,11 @@ var createActionFloatPanel = function(){
             layout: 'hbox',
             items: [ 
                 { iconCls: 'info', id: 'talk', text: 'SP'},
+                { iconCls: 'star', id: 'light'},
                 { iconCls: 'user', id: 'camera'},
                 { iconCls: 'time', id: 'wait'},
                 { iconCls: 'search' },
-                { iconCls: 'locale' },
+                { iconCls: 'locate' },
            ] 
         },//--------------------------
        {//Cancel button
@@ -203,10 +204,10 @@ var createActionPlusBtn = function() {
  * Pickers lists
  */
 var makeList = function(){
-  var json = [             {text: events.say, value: events.say},
-                           {text: events.saw, value: events.saw},
-                           {text: events.pan, value: events.pan},
-                           {text: events.move, value: events.move},
+  var json = [             {text: events.say, value: 'say'},
+                           {text: events.saw, value: 'saw'},
+                           {text: events.pan, value: 'pan'},
+                           {text: events.move, value: 'move'},
                            {text: '', value: 'null'}];
   return json;
 }
@@ -230,6 +231,7 @@ var events = {
  */
 var eventAddBtnTapped = function(obj, value){
 
+  
   //既存のものがあれば消す
   if(eventCount > 0)
     currentActionPanel.hide();
@@ -238,31 +240,96 @@ var eventAddBtnTapped = function(obj, value){
     eventCount = eventCount + 1;
 
     var eventId = 'event' + eventCount;
-    //選択したボタンの描画
-    eventPanel.add({
-    xtype: 'button',
+
+  //イベントの条件入力へ
+  //Action Mode
+  switch (value.action){
+    case "say":
+      naviView.push(eventSaid(eventId, events.say));
+      break;
+
+    default:
+      eventCount = eventCount - 1;
+      alert(obj.id + "は、今使えません。");
+      break;
+  }
+
+}
+
+//Sub Function
+var eventSaid = function(eventId, btnName){
+  var panel = Ext.create('Ext.Panel', {
+    title: 'What human say?',
+    items: [
+      {xtype: 'label', html: '一致条件を選択してね'},
+      {xtype: 'selectfield', name: 'options', id: 'ifsay',
+        options: [
+          {text: '部分一致したら', value: '='},
+          {text: '完全一致したら', value: '=='}
+        ]
+      },
+      {xtype: 'label', html: '条件を入力してね'},
+      {xtype: 'textfield', id:'whatsay'},
+      {xtype: 'button', text: '登録', ui: 'action',
+        handler: function() {//登録ボタンを押したら
+          //入力値の取得
+          var objs  = Ext.ComponentQuery.query('textfield');
+          var obj = getObjectById(objs, 'whatsay');
+          var input2 = obj.getValue();
+
+          objs  = Ext.ComponentQuery.query('selectfield');
+          obj = getObjectById(objs, 'ifsay');
+          var input1 = obj.getValue();
+          if(input1 == "==")
+            input1 = "完全";
+          else
+            input1 = "部分";
+         
+
+          if(nullCheck(input2, "条件を入力してね")){
+            //選択したボタンの描画
+            eventPanel.add(createEventBtn(eventId, btnName + "["+ input1 + ":" + input2 +"]"));
+            removeAndCreateEventAddBtn();
+            naviView.pop();
+          }
+        }
+      }
+    ]
+  });
+
+  return panel;
+}
+
+//Sub Function
+var createEventBtn = function(eventId, btnName){
+  var btn = Ext.create('Ext.Button', {
     id: eventId,
-    text: value.action,//選択した値のボタンを生成
+    text: btnName,//選択した値のボタンを生成
     height: '44px',
     ui: 'action',
     margin: 5,
     // ボタンにイベントを設定
     handler: function() {
       eventBtnTapped(this.id);
-    }});
+    }
+  });
+
+  return btn;
+}
+
+//Sub Function
+var removeAndCreateEventAddBtn = function(){
 
     //Add Buttonの再描画
-    obj.parent.add(
+    eventPanel.add(
       createEventAddBtn()
     );
 
     //イベントトリガーのaddBtnの削除
-    obj.parent.remove(addBtn);
+    eventPanel.remove(addBtn);
 
     //Action add buttonの生成
     mainPanel.add(createActionPanel()); 
-    //actionPanel.add(createActionPlusBtn());
-   
 }
 
 /**
@@ -274,7 +341,6 @@ var eventBtnTapped = function(actionPanelId){
   var num = Number(getEventId(actionPanelId));
   currentActionPanel = actionPanels[num - 1];
   currentActionPanel.show();
-
 
 }
 
@@ -294,6 +360,11 @@ var actionBtnTapped = function(obj){
       //alert(obj.id);
       //Add ActionItem
       naviView.push(programingTalk(obj.id));
+      actionFloatPanel.hide();
+      break;
+
+    case "light":
+      addActionBtn("光る");
       actionFloatPanel.hide();
       break;
 
@@ -326,9 +397,11 @@ var programingTalk = function(id){
           var obj = getObjectById(objs, 'talktext');
           var input = obj.getValue();
 
-          //ボタンを生成して、戻る
-          currentActionPanel.add(addActionBtn("話す [" + input + "]"));
-          naviView.pop();
+          if(nullCheck(input, "メッセージを入力してね")){
+            //ボタンを生成して、戻る
+            currentActionPanel.add(addActionBtn("話す [" + input + "]"));
+            naviView.pop();
+          }
         }
       }
     ]
@@ -352,8 +425,10 @@ var programingWait = function(id){
           var input = obj.getValue();
 
           //ボタンを生成して、戻る
-          currentActionPanel.add(addActionBtn("[" + input + "] 秒待つ"));
-          naviView.pop();
+          if(nullCheck(input, "待ち時間を入力してね")){
+            currentActionPanel.add(addActionBtn("[" + input + "] 秒待つ"));
+            naviView.pop();
+          }
         }
       }
     ]
@@ -403,3 +478,16 @@ var getEventId = function ( EventId ){
   return EventId.substr(5);
 
 }
+
+/**
+ * nullCheck
+ */
+var nullCheck = function(input, msg){
+  if (input.length == 0){
+    alert(msg);
+    return false;
+  }
+  else
+    return true;
+}
+
