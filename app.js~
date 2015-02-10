@@ -27,6 +27,7 @@ Ext.application({
             xtype: 'panel',
             id: 'mainPanel',
             title: 'Program mode',    // ナビゲーションバーに表示する文字列
+            badgeText: 'v1',
             items : [//start item
             {
               xtype: 'label',
@@ -130,7 +131,7 @@ var createActionFloatPanel = function(){
               handler: function() {
 	        actionBtnTapped(this);
 	      },
-              listeners: {longpress:function(){Ext.Msg.alert("hoge");}}
+              listeners: {taphold:function(){Ext.Msg.alert("hoge");}}
             },
             layout: 'hbox',
             items: [ 
