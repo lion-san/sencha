@@ -7,6 +7,9 @@ var actionFloatPanel;
 var eventPanel;
 var currentActionPanel;
 var actionPanels = new Array();//イベント毎のアクションスタック
+var actions = new Array();//イベント毎のアクション
+var currentActions = new Array();//アクション用JSON
+var actionCount = 0;
 var eventCount = 0;
 
 
@@ -123,10 +126,11 @@ var createActionFloatPanel = function(){
               margin: 5,
               width: '44px',
               height: '44px',
-              iconMask: true
-              ,handler: function() {
+              iconMask: true,
+              handler: function() {
 	        actionBtnTapped(this);
-	      }
+	      },
+              listeners: {taphold:function(){Ext.Msg.alert("hoge");}}
             },
             layout: 'hbox',
             items: [ 
@@ -231,13 +235,13 @@ var events = {
  */
 var eventAddBtnTapped = function(obj, value){
 
+  //currentActionsの設定
+  currentActions = new Array();
+  actions.push( currentActions );
   
   //既存のものがあれば消す
   if(eventCount > 0)
     currentActionPanel.hide();
-
-    //イベント処理追加数のカウントアップ
-    eventCount = eventCount + 1;
 
     var eventId = 'event' + eventCount;
 
@@ -249,11 +253,13 @@ var eventAddBtnTapped = function(obj, value){
       break;
 
     default:
-      eventCount = eventCount - 1;
-      alert(obj.id + "は、今使えません。");
-      break;
+      Ext.Msg.alert(obj.id + "は、今使えません。");
+      return;
+      //break;
   }
 
+    //イベント処理追加数のカウントアップ
+    eventCount = eventCount + 1;
 }
 
 //Sub Function
@@ -310,6 +316,8 @@ var createEventBtn = function(eventId, btnName){
     margin: 5,
     // ボタンにイベントを設定
     handler: function() {
+      //カレントアクション配列の付け替え
+      currentActions = actions[Number(getEventId(this.id))]; 
       eventBtnTapped(this.id);
     }
   });
@@ -339,7 +347,7 @@ var eventBtnTapped = function(actionPanelId){
 
   currentActionPanel.hide();
   var num = Number(getEventId(actionPanelId));
-  currentActionPanel = actionPanels[num - 1];
+  currentActionPanel = actionPanels[num];
   currentActionPanel.show();
 
 }
@@ -348,43 +356,80 @@ var eventBtnTapped = function(actionPanelId){
 /**
  * actionBtnTapped
  */
-var actionStack = new Array();
-var actionBtnTapped = function(obj){
+var actionBtnTapped = function(obj, json){
 
-  //Action Stackに追加
-
+  var currentAction;
 
   //Action Mode
   switch (obj.id){
     case "talk":
-      //alert(obj.id);
       //Add ActionItem
-      naviView.push(programingTalk(obj.id));
+      currentAction = programingTalk( json );
+      naviView.push( currentAction );
       actionFloatPanel.hide();
       break;
 
     case "light":
-      addActionBtn("光る");
+      programingLight();
       actionFloatPanel.hide();
       break;
 
     case "camera":
-      addActionBtn("写真を撮る");
+      programingCamera();
       actionFloatPanel.hide();
       break;
 
     case "wait":
-      naviView.push(programingWait(obj.id));
+      currentAction = programingWait( json );
+      naviView.push( currentAction );
       actionFloatPanel.hide();
       break;
 
     default:
-      alert(obj.id + "は、今使えません。");
-      break;
+      Ext.Msg.alert(obj.id + "は、今使えません。");
+      return;
+      //break;
   }
+ 
 }
+
 //sub function
-var programingTalk = function(id){
+var programingTalk = function( json ){
+
+  //修正の場合
+  if( json != null){
+  var panel = Ext.create('Ext.Panel', {
+    title: 'I can talk',
+    items: [
+      {xtype: 'label', html: 'ここにメッセージを入力してね。'},
+      {xtype: 'textfield', id:'talktext', value: json.param },
+      {xtype: 'button', text: '登録', ui: 'action',
+        handler: function() {//登録ボタンを押したら
+          //入力値の取得
+          var objs  = Ext.ComponentQuery.query('textfield');
+          var obj = getObjectById(objs, 'talktext');
+          var input = obj.getValue();
+
+          if(nullCheck(input, "メッセージを入力してね")){
+
+          objs  = Ext.ComponentQuery.query('button');
+          obj = getObjectById(objs, json.id);
+          obj.setText("話す [" + input + "]");
+            
+            //Jsonを更新
+            json.param = input;
+
+            //戻る
+            naviView.pop();
+ 
+          }
+        }
+      }
+    ]
+  });
+  return panel;
+  }
+
   var panel = Ext.create('Ext.Panel', {
     title: 'I can talk',
     items: [
@@ -398,8 +443,14 @@ var programingTalk = function(id){
           var input = obj.getValue();
 
           if(nullCheck(input, "メッセージを入力してね")){
+
+            var btn = addActionBtn("話す [" + input + "]");
+
+            //Jsonに出力
+            addActionJson(btn.id, "talk", input, true);
+
             //ボタンを生成して、戻る
-            currentActionPanel.add(addActionBtn("話す [" + input + "]"));
+            currentActionPanel.add( btn );
             naviView.pop();
           }
         }
@@ -411,7 +462,46 @@ var programingTalk = function(id){
 }
 
 //sub function
-var programingWait = function(id){
+var programingWait = function( json ){
+
+  //修正の場合
+  if( json != null){
+
+    //Navi画面の生成
+  var panel = Ext.create('Ext.Panel', {
+    title: 'I am waiting ',
+    items: [
+      {xtype: 'label', html: '何秒待てばいい？'},
+      {xtype: 'textfield', id:'waittime', value: json.param },
+      {xtype: 'button', text: '登録', ui: 'action',
+        handler: function() {//登録ボタンを押したら
+          //入力値の取得
+          var objs  = Ext.ComponentQuery.query('textfield');
+          var obj = getObjectById(objs, 'waittime');
+          var input = toHankaku( obj.getValue() );
+
+          objs  = Ext.ComponentQuery.query('button');
+          obj = getObjectById(objs, json.id);
+          
+          //ボタンを生成して、戻る
+          if(nullCheck(input, "待ち時間を入力してね")){
+            if(numberCheck(input, "数字を入力してね")){
+
+            obj.setText("[" + input + "] 秒待つ");
+            
+            //Jsonを更新
+            json.param = input;
+
+            //戻る
+            naviView.pop();
+          }}
+        }
+      }
+    ]
+  });programingWait
+  return panel;
+  }
+
   var panel = Ext.create('Ext.Panel', {
     title: 'I am waiting ',
     items: [
@@ -422,13 +512,19 @@ var programingWait = function(id){
           //入力値の取得
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'waittime');
-          var input = obj.getValue();
+          var input = toHankaku( obj.getValue() );
 
           //ボタンを生成して、戻る
           if(nullCheck(input, "待ち時間を入力してね")){
-            currentActionPanel.add(addActionBtn("[" + input + "] 秒待つ"));
+            if(numberCheck(input, "数字を入力してね")){
+            var btn  = addActionBtn("[" + input + "] 秒待つ");
+            
+            //Jsonに出力
+            addActionJson(btn.id, "wait", input, true);
+
+            currentActionPanel.add( btn );
             naviView.pop();
-          }
+          }}
         }
       }
     ]
@@ -437,15 +533,51 @@ var programingWait = function(id){
   return panel;
 }
 
+//sub function
+var programingCamera = function(){
 
+    var btn = addActionBtn("写真を撮る");
+
+    //Jsonに出力
+    addActionJson(btn.id, "camera", null, false);
+}
+
+//sub function
+var programingLight = function(){
+
+    var btn = addActionBtn("光る");
+
+    //Jsonに出力
+    addActionJson(btn.id, "light", null, false);
+}
 
 /**
  * 選択したアクションボタンの描画
  */
-var addActionBtn = function(id){
+var addActionBtn = function(text){
 
   var newBtn = Ext.create('Ext.Button', {
-    text: id 
+    text: text,
+    handler: function(){
+      //JSONの検索
+      var json = getJsonById( this.id ); 
+
+      //編集可能ボタンのみ、ナビ表示
+      if(json.modify){
+
+        //Navi画面への遷移
+        //ダミーオブジェクト
+        var obj = {"id": null};
+        obj.id = json.action;
+        actionBtnTapped(obj, json);
+      }
+    },
+    listeners : {
+      longpress: function(e){
+        Ext.Msg.alert("long");
+      }
+    }
+
   });
 
   currentActionPanel.add(newBtn);
@@ -474,7 +606,6 @@ var getObjectById = function (items, id){
  * getEventId
  */
 var getEventId = function ( EventId ){
-
   return EventId.substr(5);
 
 }
@@ -484,10 +615,54 @@ var getEventId = function ( EventId ){
  */
 var nullCheck = function(input, msg){
   if (input.length == 0){
-    alert(msg);
+    Ext.Msg.alert(msg);
     return false;
   }
   else
     return true;
 }
 
+var numberCheck = function( input, msg ){
+  if ( input.match(/[^0-9]+/)){
+    Ext.Msg.alert( msg );
+    return false;
+  }
+  else
+    return true;
+  
+}
+
+var toHankaku = function ( input ){
+  
+  var val =  input.replace( /[０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 65248);
+  });
+
+  return val;
+}
+
+/**
+ * addActionJSON
+ */
+var addActionJson = function(btnId, action, param, modify){
+  var json = {
+    "id"     : btnId,
+    "action" : action,
+    "param"  : param,
+    "modify" : modify
+  };
+  currentActions.push( json );
+}
+
+/**
+ * getJsonById
+ */
+var getJsonById = function(id){
+  var i;
+  for (i = 0; i < currentActions.length; i++){
+    if(currentActions[i].id == id)
+      return currentActions[i];
+  }
+
+  return null;
+}
