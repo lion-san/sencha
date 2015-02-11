@@ -573,8 +573,12 @@ var addActionBtn = function(text){
       }
     },
     listeners : {
-      longpress: function(e){
-        Ext.Msg.alert("long");
+      element: 'element',
+      taphold: function(e){
+        //For Delete
+        var actionSheet = deleteConfirm( this ); 
+        Ext.Viewport.add( actionSheet );
+        actionSheet.show();
       }
     }
 
@@ -586,6 +590,39 @@ var addActionBtn = function(text){
   return newBtn;
 }
 
+//ActionSheet for DELETE
+var deleteConfirm = function( actionBtn ){
+
+  var actionSheet = Ext.create('Ext.ActionSheet', {
+    items: [
+      {
+        text: 'Delete', ui: 'decline',
+        handler: function(){
+
+          //Delete function
+          deleteAction( actionBtn );
+
+
+          //Hide actionSheet
+          actionSheet.hide();
+        }
+      }
+    ]
+  });
+
+  return actionSheet;
+}
+
+//Delete function
+var deleteAction = function ( actionBtn ){
+
+  //Delete from JSON
+  deleteJsonById( actionBtn.id );
+
+  //Delete Button
+  actionBtn.destroy(); 
+
+}
 
 //--- event end ----------------------------------------------
 
@@ -666,3 +703,19 @@ var getJsonById = function(id){
 
   return null;
 }
+
+
+/**
+ * deleteJsonById
+ */
+var deleteJsonById = function(id){
+  var i;
+  for (i = 0; i < currentActions.length; i++){
+    if(currentActions[i].id == id){
+      currentActions.splice( i, 1 );
+    }
+  }
+
+  return null;
+}
+
