@@ -606,6 +606,12 @@ var deleteConfirm = function( actionBtn ){
           //Hide actionSheet
           actionSheet.hide();
         }
+      },
+      {
+        text: 'Cancel', ui: 'normal',
+        handler: function(){
+          actionSheet.hide();
+        }
       }
     ]
   });
