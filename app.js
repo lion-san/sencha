@@ -9,7 +9,6 @@ var currentActionPanel;
 var actionPanels = new Array();//イベント毎のアクションスタック
 var actions = new Array();//イベント毎のアクション
 var currentActions = new Array();//アクション用JSON
-var actionCount = 0;
 var eventCount = 0;
 
 
@@ -156,6 +155,7 @@ var createActionFloatPanel = function(){
        }]});
    return actionFloatPanel;
 }
+
 
 /**
  * createActionPanel
@@ -319,6 +319,15 @@ var createEventBtn = function(eventId, btnName){
       //カレントアクション配列の付け替え
       currentActions = actions[Number(getEventId(this.id))]; 
       eventBtnTapped(this.id);
+    },
+    listeners : {
+      element: 'element',
+      taphold: function(e){
+        //For Delete
+        var actionSheet = deleteConfirm( this, "event" ); 
+        Ext.Viewport.add( actionSheet );
+        actionSheet.show();
+      }
     }
   });
 
@@ -576,7 +585,7 @@ var addActionBtn = function(text){
       element: 'element',
       taphold: function(e){
         //For Delete
-        var actionSheet = deleteConfirm( this ); 
+        var actionSheet = deleteConfirm( this, "action" ); 
         Ext.Viewport.add( actionSheet );
         actionSheet.show();
       }
@@ -591,17 +600,26 @@ var addActionBtn = function(text){
 }
 
 //ActionSheet for DELETE
-var deleteConfirm = function( actionBtn ){
+var deleteConfirm = function( btn, btnType ){
 
   var actionSheet = Ext.create('Ext.ActionSheet', {
     items: [
       {
         text: 'Delete', ui: 'decline',
         handler: function(){
+          switch ( btnType ){
+            case "action":
+              //Delete function
+              deleteAction( btn );
+            break;
 
-          //Delete function
-          deleteAction( actionBtn );
+            case "event":
+              //Delete event
+              deleteEvent( btn );
 
+            default:
+            break;
+          }
 
           //Hide actionSheet
           actionSheet.hide();
@@ -619,7 +637,7 @@ var deleteConfirm = function( actionBtn ){
   return actionSheet;
 }
 
-//Delete function
+//Delete action
 var deleteAction = function ( actionBtn ){
 
   //Delete from JSON
@@ -627,6 +645,15 @@ var deleteAction = function ( actionBtn ){
 
   //Delete Button
   actionBtn.destroy(); 
+
+}
+
+
+//Delete event
+var deleteEvent = function ( btn ){
+
+  //Delete Button
+  btn.destroy(); 
 
 }
 
