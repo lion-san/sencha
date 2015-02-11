@@ -78,7 +78,7 @@ var createEventAddBtn = function(){
                  text: 'Add',
                  iconCls: 'add',
                  iconMask: true,
-                 badgeText: 'v2',
+                 badgeText: 'v3',
                  height: '44px',
                  ui: 'round',
                  margin: 5,
