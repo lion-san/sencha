@@ -7,7 +7,8 @@ var actionFloatPanel;
 var eventPanel;
 var currentActionPanel;
 var actionPanels = new Array();//イベント毎のアクションスタック
-var actions = new Array();//イベント毎のアクション
+var allEvents = new Array();//全イベントJSONリスト
+var actions = new Array();//全アクションJSONリスト
 var currentActions = new Array();//アクション用JSON
 var eventCount = 0;
 
@@ -17,6 +18,7 @@ var eventCount = 0;
 //-------------------------------------
 Ext.application({
   launch: function() {
+   
     Ext.Viewport.add({
       xtype: 'navigationview',
       id: 'naviView',
@@ -37,10 +39,34 @@ Ext.application({
               layout: 'hbox',
               height: '30%',
               scrollable: true,
-            }
+            },
+            {//Toobar
+              xtype: 'toolbar',
+              docked: 'top',
+              items: [
+                {
+                  text: 'Save',
+                  align: 'left',
+                  handler: function(){
+                    saveProject();
+                  }
+                },
+                {
+                  iconCls: 'home',
+                  iconMask: true,
+                  align: 'right'
+                },
+                {
+                  iconCls: 'refresh',
+                  iconMask: true,
+                  align: 'right'
+                }
+              ]
+          }
           ]//end item
           }]//navigationview item
     });//Ext.Viewport
+
 
   //--------------------------------
   //EventAddButtonの生成
@@ -286,10 +312,18 @@ var eventSaid = function(eventId, btnName){
           objs  = Ext.ComponentQuery.query('selectfield');
           obj = getObjectById(objs, 'ifsay');
           var input1 = obj.getValue();
-          if(input1 == "==")
+          if(input1 == "=="){
             input1 = "完全";
-          else
+
+            //JSONのPush
+            var json = {"event": "say", "type" : "=="};
+            allEvents.push( json );
+          }
+          else{
             input1 = "部分";
+            var json = {"event": "say", "type" : "="};
+            allEvents.push( json );
+          }
          
 
           if(nullCheck(input2, "条件を入力してね")){
@@ -307,6 +341,7 @@ var eventSaid = function(eventId, btnName){
 }
 
 //Sub Function
+//イベント（条件）ボタンの生成
 var createEventBtn = function(eventId, btnName){
   var btn = Ext.create('Ext.Button', {
     id: eventId,
@@ -652,9 +687,74 @@ var deleteAction = function ( actionBtn ){
 //Delete event
 var deleteEvent = function ( btn ){
 
+  //Delete JSON
+  deleteEventJsonById( btn.id );
+
   //Delete Button
   btn.destroy(); 
 
+  //Delete Panel
+  currentActionPanel.destroy();
+
+}
+
+/**
+ * saveProject
+ * プロジェクトの保存
+ */
+var saveProject = function(){
+
+
+  var eventList = new Array();
+  var actionList;
+  var json;
+
+  var i = 0;
+  var j = 0;
+
+  json = "[";
+
+  for (i = 0; i < allEvents.length; i++){
+    if(allEvents[i] != null){
+
+      eventList.push( allEvents[i] );
+      actionList = new Array();
+
+      json += "{\"event\":\"" + allEvents[i].event + "\",";
+      json += "\"type\":\"" + allEvents[i].type + "\",";
+
+      
+      json += "[";
+      for(j = 0; j < actions[i].length; j++){
+        if(actions[i][j] != null){
+          actionList.push( actions[i][j] );
+
+          var param = actions[i][j].param;
+          if(param == null)
+            param = "";
+          
+          json += "{\"action\":\"" + actions[i][j].action + "\",";
+          json += "\"param\":\"" + param + "\"},\n";
+
+        }
+      }
+
+      //Actionsのコンマ削除処理
+      json = json.substr(0, json.length-2);
+      json += "]";
+
+      json += "},\n";
+
+    }
+  }
+  //Events最後のコンマ削除処理
+  json = json.substr(0, json.length-2);//コンマ+改行コード
+
+  json += "]";
+
+  Ext.Msg.alert("保存しました！");
+
+  return json;
 }
 
 //--- event end ----------------------------------------------
@@ -737,6 +837,18 @@ var getJsonById = function(id){
   return null;
 }
 
+/**
+ * deleteJsonById
+ */
+var deleteEventJsonById = function(id){
+
+  var index = getEventId(id);
+
+  allEvents[index] = null;
+  actions[index] = null;
+
+  return null;
+}
 
 /**
  * deleteJsonById
@@ -751,4 +863,5 @@ var deleteJsonById = function(id){
 
   return null;
 }
+
 
