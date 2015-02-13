@@ -59,7 +59,10 @@ Ext.application({
                 {
                   iconCls: 'refresh',
                   iconMask: true,
-                  align: 'right'
+                  align: 'right',
+                  handler: function(){
+                    loadProject();
+                  }
                 }
               ]
           }
@@ -704,7 +707,6 @@ var deleteEvent = function ( btn ){
  */
 var saveProject = function(){
 
-
   var eventList = new Array();
   var actionList;
   var json;
@@ -721,10 +723,10 @@ var saveProject = function(){
       actionList = new Array();
 
       json += "{\"event\":\"" + allEvents[i].event + "\",";
-      json += "\"type\":\"" + allEvents[i].type + "\",";
+      json += "\"operator\":\"" + allEvents[i].type + "\",";
 
       
-      json += "[";
+      json += "actions: [";
       for(j = 0; j < actions[i].length; j++){
         if(actions[i][j] != null){
           actionList.push( actions[i][j] );
@@ -755,6 +757,25 @@ var saveProject = function(){
   Ext.Msg.alert("•Û‘¶‚µ‚Ü‚µ‚½I");
 
   return json;
+}
+
+
+/**
+ * loadProject
+ */
+var loadProject = function() {
+
+  var request = new XMLHttpRequest();
+  request.open("GET", "localhost:3000/events.json", true);
+  request.onreadystatechange = function() {
+    if (request.readyState == 4 && request.status == 200) {
+      //ŽóMŠ®—¹Žž‚Ìˆ—
+      //var result = document.getElementById("result_get");
+      var text = document.createTextNode(decodeURI(request.responseText));
+      //result.appendChild(text);
+    }
+  }
+  request.send("");
 }
 
 //--- event end ----------------------------------------------
