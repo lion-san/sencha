@@ -1,4 +1,4 @@
-var addBtn;
+ï»¿var addBtn;
 
 var naviView;
 var mainPanel;
@@ -6,10 +6,10 @@ var actionFloatPanel;
 
 var eventPanel;
 var currentActionPanel;
-var actionPanels = new Array();//ƒCƒxƒ“ƒg–ˆ‚ÌƒAƒNƒVƒ‡ƒ“ƒXƒ^ƒbƒN
-var allEvents = new Array();//‘SƒCƒxƒ“ƒgJSONƒŠƒXƒg
-var actions = new Array();//‘SƒAƒNƒVƒ‡ƒ“JSONƒŠƒXƒg
-var currentActions = new Array();//ƒAƒNƒVƒ‡ƒ“—pJSON
+var actionPanels = new Array();//ã‚¤ãƒ™ãƒ³ãƒˆæ¯ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚¹ã‚¿ãƒƒã‚¯
+var allEvents = new Array();//å…¨ã‚¤ãƒ™ãƒ³ãƒˆJSONãƒªã‚¹ãƒˆ
+var actions = new Array();//å…¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³JSONãƒªã‚¹ãƒˆ
+var currentActions = new Array();//ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ç”¨JSON
 var eventCount = 0;
 
 
@@ -27,7 +27,7 @@ Ext.application({
           {
             xtype: 'panel',
             id: 'mainPanel',
-            title: 'Program mode',    // ƒiƒrƒQ[ƒVƒ‡ƒ“ƒo[‚É•\¦‚·‚é•¶š—ñ
+            title: 'Program mode',    // ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ãƒãƒ¼ã«è¡¨ç¤ºã™ã‚‹æ–‡å­—åˆ—
             items : [//start item
             {
               xtype: 'label',
@@ -72,19 +72,19 @@ Ext.application({
 
 
   //--------------------------------
-  //EventAddButton‚Ì¶¬
+  //EventAddButtonã®ç”Ÿæˆ
   var panels  = Ext.ComponentQuery.query('panel');
   eventPanel = getObjectById(panels, 'eventPanel');
   eventPanel.add(createEventAddBtn());
   
-  //ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìæ“¾
+  //ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å–å¾—
   var navis  = Ext.ComponentQuery.query('navigationview');
   naviView = getObjectById(navis, 'naviView');
 
   mainPanel = getObjectById(panels, 'mainPanel');
   actionPanel = getObjectById(panels, 'actionPanel');
 
-  //ActionFloatPanel‚Ì¶¬
+  //ActionFloatPanelã®ç”Ÿæˆ
   createActionFloatPanel();
   Ext.Viewport.add(actionFloatPanel);
 
@@ -99,7 +99,7 @@ Ext.application({
 
 //--- create start ----------------------------------------------
 /**
- * EventAddBtn‚Ì¶¬
+ * EventAddBtnã®ç”Ÿæˆ
  */
 var createEventAddBtn = function(){
   var btn = Ext.create('Ext.Button', {
@@ -111,7 +111,7 @@ var createEventAddBtn = function(){
                  ui: 'round',
                  margin: 5,
       
-                 // ƒ{ƒ^ƒ“‚ÉƒCƒxƒ“ƒg‚ğtextfieldİ’è
+                 // ãƒœã‚¿ãƒ³ã«ã‚¤ãƒ™ãƒ³ãƒˆã‚’textfieldè¨­å®š
                  handler: function() {
                    var obj = this;
                    addBtn = this;
@@ -139,7 +139,7 @@ var createEventAddBtn = function(){
 }
 
 /**
- * ActionFloatPanel‚Ì¶¬
+ * ActionFloatPanelã®ç”Ÿæˆ
  */
 var createActionFloatPanel = function(){
    //Floating panel
@@ -156,8 +156,8 @@ var createActionFloatPanel = function(){
               height: '44px',
               iconMask: true,
               handler: function() {
-	        actionBtnTapped(this);
-	      },
+        actionBtnTapped(this);
+      },
               listeners: {taphold:function(){Ext.Msg.alert("hoge");}}
             },
             layout: 'hbox',
@@ -206,15 +206,15 @@ var createActionPanel = function(){
     ]
   });
 
-  actionPanels.push(panel);//ƒXƒ^ƒbƒN‚ÉƒvƒbƒVƒ…
+  actionPanels.push(panel);//ã‚¹ã‚¿ãƒƒã‚¯ã«ãƒ—ãƒƒã‚·ãƒ¥
   currentActionPanel = panel;
 
-  //+ƒ{ƒ^ƒ“‚Ì’Ç‰Á
+  //+ãƒœã‚¿ãƒ³ã®è¿½åŠ 
   panel.add(createActionPlusBtn());
   return panel;
 }
 
-//Action’Ç‰Áƒ{ƒ^ƒ“u{v
+//Actionè¿½åŠ ãƒœã‚¿ãƒ³ã€Œï¼‹ã€
 var createActionPlusBtn = function() {
 
   var id = 'plus' + eventCount;
@@ -225,7 +225,7 @@ var createActionPlusBtn = function() {
       iconMask: true,
       height: '66px',
       handler: function() {
-      //ActionFloatPanel‚Ì•\¦
+      //ActionFloatPanelã®è¡¨ç¤º
        actionFloatPanel.show(); 
      }});
   return plus;
@@ -246,12 +246,12 @@ var makeList = function(){
 }
 
 
-//Value‚ÆƒCƒxƒ“ƒg‚Ìƒ}ƒbƒv
+//Valueã¨ã‚¤ãƒ™ãƒ³ãƒˆã®ãƒãƒƒãƒ—
 var events = { 
-  "say": "‰¹º‚ğŒŸ’m",
-  "saw": "’N‚©‚ğŒ©‚½‚ç",
-  "pan": "è‚ğ‚½‚½‚­",
-  "move": "“®ì‚ğŒŸ’m"
+  "say": "éŸ³å£°ã‚’æ¤œçŸ¥",
+  "saw": "èª°ã‹ã‚’è¦‹ãŸã‚‰",
+  "pan": "æ‰‹ã‚’ãŸãŸã",
+  "move": "å‹•ä½œã‚’æ¤œçŸ¥"
 };
 
 //--- create end ----------------------------------------------
@@ -264,17 +264,17 @@ var events = {
  */
 var eventAddBtnTapped = function(obj, value){
 
-  //currentActions‚Ìİ’è
+  //currentActionsã®è¨­å®š
   currentActions = new Array();
   actions.push( currentActions );
   
-  //Šù‘¶‚Ì‚à‚Ì‚ª‚ ‚ê‚ÎÁ‚·
+  //æ—¢å­˜ã®ã‚‚ã®ãŒã‚ã‚Œã°æ¶ˆã™
   if(eventCount > 0)
     currentActionPanel.hide();
 
     var eventId = 'event' + eventCount;
 
-  //ƒCƒxƒ“ƒg‚ÌğŒ“ü—Í‚Ö
+  //ã‚¤ãƒ™ãƒ³ãƒˆã®æ¡ä»¶å…¥åŠ›ã¸
   //Action Mode
   switch (value.action){
     case "say":
@@ -282,12 +282,12 @@ var eventAddBtnTapped = function(obj, value){
       break;
 
     default:
-      Ext.Msg.alert(obj.id + "‚ÍA¡g‚¦‚Ü‚¹‚ñB");
+      Ext.Msg.alert(obj.id + "ã¯ã€ä»Šä½¿ãˆã¾ã›ã‚“ã€‚");
       return;
       //break;
   }
 
-    //ƒCƒxƒ“ƒgˆ—’Ç‰Á”‚ÌƒJƒEƒ“ƒgƒAƒbƒv
+    //ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†è¿½åŠ æ•°ã®ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
     eventCount = eventCount + 1;
 }
 
@@ -296,18 +296,18 @@ var eventSaid = function(eventId, btnName){
   var panel = Ext.create('Ext.Panel', {
     title: 'What human say?',
     items: [
-      {xtype: 'label', html: 'ˆê’vğŒ‚ğ‘I‘ğ‚µ‚Ä‚Ë'},
+      {xtype: 'label', html: 'ä¸€è‡´æ¡ä»¶ã‚’é¸æŠã—ã¦ã­'},
       {xtype: 'selectfield', name: 'options', id: 'ifsay',
         options: [
-          {text: '•”•ªˆê’v‚µ‚½‚ç', value: '='},
-          {text: 'Š®‘Sˆê’v‚µ‚½‚ç', value: '=='}
+          {text: 'éƒ¨åˆ†ä¸€è‡´ã—ãŸã‚‰', value: '='},
+          {text: 'å®Œå…¨ä¸€è‡´ã—ãŸã‚‰', value: '=='}
         ]
       },
-      {xtype: 'label', html: 'ğŒ‚ğ“ü—Í‚µ‚Ä‚Ë'},
+      {xtype: 'label', html: 'æ¡ä»¶ã‚’å…¥åŠ›ã—ã¦ã­'},
       {xtype: 'textfield', id:'whatsay'},
-      {xtype: 'button', text: '“o˜^', ui: 'action',
-        handler: function() {//“o˜^ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-          //“ü—Í’l‚Ìæ“¾
+      {xtype: 'button', text: 'ç™»éŒ²', ui: 'action',
+        handler: function() {//ç™»éŒ²ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+          //å…¥åŠ›å€¤ã®å–å¾—
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'whatsay');
           var input2 = obj.getValue();
@@ -316,21 +316,21 @@ var eventSaid = function(eventId, btnName){
           obj = getObjectById(objs, 'ifsay');
           var input1 = obj.getValue();
           if(input1 == "=="){
-            input1 = "Š®‘S";
+            input1 = "å®Œå…¨";
 
-            //JSON‚ÌPush
+            //JSONã®Push
             var json = {"event": "say", "type" : "=="};
             allEvents.push( json );
           }
           else{
-            input1 = "•”•ª";
+            input1 = "éƒ¨åˆ†";
             var json = {"event": "say", "type" : "="};
             allEvents.push( json );
           }
          
 
-          if(nullCheck(input2, "ğŒ‚ğ“ü—Í‚µ‚Ä‚Ë")){
-            //‘I‘ğ‚µ‚½ƒ{ƒ^ƒ“‚Ì•`‰æ
+          if(nullCheck(input2, "æ¡ä»¶ã‚’å…¥åŠ›ã—ã¦ã­")){
+            //é¸æŠã—ãŸãƒœã‚¿ãƒ³ã®æç”»
             eventPanel.add(createEventBtn(eventId, btnName + "["+ input1 + ":" + input2 +"]"));
             removeAndCreateEventAddBtn();
             naviView.pop();
@@ -344,17 +344,17 @@ var eventSaid = function(eventId, btnName){
 }
 
 //Sub Function
-//ƒCƒxƒ“ƒgiğŒjƒ{ƒ^ƒ“‚Ì¶¬
+//ã‚¤ãƒ™ãƒ³ãƒˆï¼ˆæ¡ä»¶ï¼‰ãƒœã‚¿ãƒ³ã®ç”Ÿæˆ
 var createEventBtn = function(eventId, btnName){
   var btn = Ext.create('Ext.Button', {
     id: eventId,
-    text: btnName,//‘I‘ğ‚µ‚½’l‚Ìƒ{ƒ^ƒ“‚ğ¶¬
+    text: btnName,//é¸æŠã—ãŸå€¤ã®ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆ
     height: '44px',
     ui: 'action',
     margin: 5,
-    // ƒ{ƒ^ƒ“‚ÉƒCƒxƒ“ƒg‚ğİ’è
+    // ãƒœã‚¿ãƒ³ã«ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¨­å®š
     handler: function() {
-      //ƒJƒŒƒ“ƒgƒAƒNƒVƒ‡ƒ“”z—ñ‚Ì•t‚¯‘Ö‚¦
+      //ã‚«ãƒ¬ãƒ³ãƒˆã‚¢ã‚¯ã‚·ãƒ§ãƒ³é…åˆ—ã®ä»˜ã‘æ›¿ãˆ
       currentActions = actions[Number(getEventId(this.id))]; 
       eventBtnTapped(this.id);
     },
@@ -375,15 +375,15 @@ var createEventBtn = function(eventId, btnName){
 //Sub Function
 var removeAndCreateEventAddBtn = function(){
 
-    //Add Button‚ÌÄ•`‰æ
+    //Add Buttonã®å†æç”»
     eventPanel.add(
       createEventAddBtn()
     );
 
-    //ƒCƒxƒ“ƒgƒgƒŠƒK[‚ÌaddBtn‚Ìíœ
+    //ã‚¤ãƒ™ãƒ³ãƒˆãƒˆãƒªã‚¬ãƒ¼ã®addBtnã®å‰Šé™¤
     eventPanel.remove(addBtn);
 
-    //Action add button‚Ì¶¬
+    //Action add buttonã®ç”Ÿæˆ
     mainPanel.add(createActionPanel()); 
 }
 
@@ -433,7 +433,7 @@ var actionBtnTapped = function(obj, json){
       break;
 
     default:
-      Ext.Msg.alert(obj.id + "‚ÍA¡g‚¦‚Ü‚¹‚ñB");
+      Ext.Msg.alert(obj.id + "ã¯ã€ä»Šä½¿ãˆã¾ã›ã‚“ã€‚");
       return;
       //break;
   }
@@ -443,30 +443,30 @@ var actionBtnTapped = function(obj, json){
 //sub function
 var programingTalk = function( json ){
 
-  //C³‚Ìê‡
+  //ä¿®æ­£ã®å ´åˆ
   if( json != null){
   var panel = Ext.create('Ext.Panel', {
     title: 'I can talk',
     items: [
-      {xtype: 'label', html: '‚±‚±‚ÉƒƒbƒZ[ƒW‚ğ“ü—Í‚µ‚Ä‚ËB'},
+      {xtype: 'label', html: 'ã“ã“ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å…¥åŠ›ã—ã¦ã­ã€‚'},
       {xtype: 'textfield', id:'talktext', value: json.param },
-      {xtype: 'button', text: '“o˜^', ui: 'action',
-        handler: function() {//“o˜^ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-          //“ü—Í’l‚Ìæ“¾
+      {xtype: 'button', text: 'ç™»éŒ²', ui: 'action',
+        handler: function() {//ç™»éŒ²ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+          //å…¥åŠ›å€¤ã®å–å¾—
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'talktext');
           var input = obj.getValue();
 
-          if(nullCheck(input, "ƒƒbƒZ[ƒW‚ğ“ü—Í‚µ‚Ä‚Ë")){
+          if(nullCheck(input, "ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å…¥åŠ›ã—ã¦ã­")){
 
           objs  = Ext.ComponentQuery.query('button');
           obj = getObjectById(objs, json.id);
-          obj.setText("˜b‚· [" + input + "]");
+          obj.setText("è©±ã™ [" + input + "]");
             
-            //Json‚ğXV
+            //Jsonã‚’æ›´æ–°
             json.param = input;
 
-            //–ß‚é
+            //æˆ»ã‚‹
             naviView.pop();
  
           }
@@ -480,23 +480,23 @@ var programingTalk = function( json ){
   var panel = Ext.create('Ext.Panel', {
     title: 'I can talk',
     items: [
-      {xtype: 'label', html: '‚±‚±‚ÉƒƒbƒZ[ƒW‚ğ“ü—Í‚µ‚Ä‚ËB'},
+      {xtype: 'label', html: 'ã“ã“ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å…¥åŠ›ã—ã¦ã­ã€‚'},
       {xtype: 'textfield', id:'talktext'},
-      {xtype: 'button', text: '“o˜^', ui: 'action',
-        handler: function() {//“o˜^ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-          //“ü—Í’l‚Ìæ“¾
+      {xtype: 'button', text: 'ç™»éŒ²', ui: 'action',
+        handler: function() {//ç™»éŒ²ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+          //å…¥åŠ›å€¤ã®å–å¾—
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'talktext');
           var input = obj.getValue();
 
-          if(nullCheck(input, "ƒƒbƒZ[ƒW‚ğ“ü—Í‚µ‚Ä‚Ë")){
+          if(nullCheck(input, "ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å…¥åŠ›ã—ã¦ã­")){
 
-            var btn = addActionBtn("˜b‚· [" + input + "]");
+            var btn = addActionBtn("è©±ã™ [" + input + "]");
 
-            //Json‚Éo—Í
+            //Jsonã«å‡ºåŠ›
             addActionJson(btn.id, "talk", input, true);
 
-            //ƒ{ƒ^ƒ“‚ğ¶¬‚µ‚ÄA–ß‚é
+            //ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆã—ã¦ã€æˆ»ã‚‹
             currentActionPanel.add( btn );
             naviView.pop();
           }
@@ -511,18 +511,18 @@ var programingTalk = function( json ){
 //sub function
 var programingWait = function( json ){
 
-  //C³‚Ìê‡
+  //ä¿®æ­£ã®å ´åˆ
   if( json != null){
 
-    //Navi‰æ–Ê‚Ì¶¬
+    //Naviç”»é¢ã®ç”Ÿæˆ
   var panel = Ext.create('Ext.Panel', {
     title: 'I am waiting ',
     items: [
-      {xtype: 'label', html: '‰½•b‘Ò‚Ä‚Î‚¢‚¢H'},
+      {xtype: 'label', html: 'ä½•ç§’å¾…ã¦ã°ã„ã„ï¼Ÿ'},
       {xtype: 'textfield', id:'waittime', value: json.param },
-      {xtype: 'button', text: '“o˜^', ui: 'action',
-        handler: function() {//“o˜^ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-          //“ü—Í’l‚Ìæ“¾
+      {xtype: 'button', text: 'ç™»éŒ²', ui: 'action',
+        handler: function() {//ç™»éŒ²ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+          //å…¥åŠ›å€¤ã®å–å¾—
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'waittime');
           var input = toHankaku( obj.getValue() );
@@ -530,16 +530,16 @@ var programingWait = function( json ){
           objs  = Ext.ComponentQuery.query('button');
           obj = getObjectById(objs, json.id);
           
-          //ƒ{ƒ^ƒ“‚ğ¶¬‚µ‚ÄA–ß‚é
-          if(nullCheck(input, "‘Ò‚¿ŠÔ‚ğ“ü—Í‚µ‚Ä‚Ë")){
-            if(numberCheck(input, "”š‚ğ“ü—Í‚µ‚Ä‚Ë")){
+          //ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆã—ã¦ã€æˆ»ã‚‹
+          if(nullCheck(input, "å¾…ã¡æ™‚é–“ã‚’å…¥åŠ›ã—ã¦ã­")){
+            if(numberCheck(input, "æ•°å­—ã‚’å…¥åŠ›ã—ã¦ã­")){
 
-            obj.setText("[" + input + "] •b‘Ò‚Â");
+            obj.setText("[" + input + "] ç§’å¾…ã¤");
             
-            //Json‚ğXV
+            //Jsonã‚’æ›´æ–°
             json.param = input;
 
-            //–ß‚é
+            //æˆ»ã‚‹
             naviView.pop();
           }}
         }
@@ -552,21 +552,21 @@ var programingWait = function( json ){
   var panel = Ext.create('Ext.Panel', {
     title: 'I am waiting ',
     items: [
-      {xtype: 'label', html: '‰½•b‘Ò‚Ä‚Î‚¢‚¢H'},
+      {xtype: 'label', html: 'ä½•ç§’å¾…ã¦ã°ã„ã„ï¼Ÿ'},
       {xtype: 'textfield', id:'waittime'},
-      {xtype: 'button', text: '“o˜^', ui: 'action',
-        handler: function() {//“o˜^ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-          //“ü—Í’l‚Ìæ“¾
+      {xtype: 'button', text: 'ç™»éŒ²', ui: 'action',
+        handler: function() {//ç™»éŒ²ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+          //å…¥åŠ›å€¤ã®å–å¾—
           var objs  = Ext.ComponentQuery.query('textfield');
           var obj = getObjectById(objs, 'waittime');
           var input = toHankaku( obj.getValue() );
 
-          //ƒ{ƒ^ƒ“‚ğ¶¬‚µ‚ÄA–ß‚é
-          if(nullCheck(input, "‘Ò‚¿ŠÔ‚ğ“ü—Í‚µ‚Ä‚Ë")){
-            if(numberCheck(input, "”š‚ğ“ü—Í‚µ‚Ä‚Ë")){
-            var btn  = addActionBtn("[" + input + "] •b‘Ò‚Â");
+          //ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆã—ã¦ã€æˆ»ã‚‹
+          if(nullCheck(input, "å¾…ã¡æ™‚é–“ã‚’å…¥åŠ›ã—ã¦ã­")){
+            if(numberCheck(input, "æ•°å­—ã‚’å…¥åŠ›ã—ã¦ã­")){
+            var btn  = addActionBtn("[" + input + "] ç§’å¾…ã¤");
             
-            //Json‚Éo—Í
+            //Jsonã«å‡ºåŠ›
             addActionJson(btn.id, "wait", input, true);
 
             currentActionPanel.add( btn );
@@ -583,37 +583,37 @@ var programingWait = function( json ){
 //sub function
 var programingCamera = function(){
 
-    var btn = addActionBtn("Ê^‚ğB‚é");
+    var btn = addActionBtn("å†™çœŸã‚’æ’®ã‚‹");
 
-    //Json‚Éo—Í
+    //Jsonã«å‡ºåŠ›
     addActionJson(btn.id, "camera", null, false);
 }
 
 //sub function
 var programingLight = function(){
 
-    var btn = addActionBtn("Œõ‚é");
+    var btn = addActionBtn("å…‰ã‚‹");
 
-    //Json‚Éo—Í
+    //Jsonã«å‡ºåŠ›
     addActionJson(btn.id, "light", null, false);
 }
 
 /**
- * ‘I‘ğ‚µ‚½ƒAƒNƒVƒ‡ƒ“ƒ{ƒ^ƒ“‚Ì•`‰æ
+ * é¸æŠã—ãŸã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒœã‚¿ãƒ³ã®æç”»
  */
 var addActionBtn = function(text){
 
   var newBtn = Ext.create('Ext.Button', {
     text: text,
     handler: function(){
-      //JSON‚ÌŒŸõ
+      //JSONã®æ¤œç´¢
       var json = getJsonById( this.id ); 
 
-      //•ÒW‰Â”\ƒ{ƒ^ƒ“‚Ì‚İAƒiƒr•\¦
+      //ç·¨é›†å¯èƒ½ãƒœã‚¿ãƒ³ã®ã¿ã€ãƒŠãƒ“è¡¨ç¤º
       if(json.modify){
 
-        //Navi‰æ–Ê‚Ö‚Ì‘JˆÚ
-        //ƒ_ƒ~[ƒIƒuƒWƒFƒNƒg
+        //Naviç”»é¢ã¸ã®é·ç§»
+        //ãƒ€ãƒŸãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         var obj = {"id": null};
         obj.id = json.action;
         actionBtnTapped(obj, json);
@@ -703,7 +703,7 @@ var deleteEvent = function ( btn ){
 
 /**
  * saveProject
- * ƒvƒƒWƒFƒNƒg‚Ì•Û‘¶
+ * ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä¿å­˜
  */
 var saveProject = function(){
 
@@ -741,7 +741,7 @@ var saveProject = function(){
         }
       }
 
-      //Actions‚ÌƒRƒ“ƒ}íœˆ—
+      //Actionsã®ã‚³ãƒ³ãƒå‰Šé™¤å‡¦ç†
       json = json.substr(0, json.length-2);
       json += "]";
 
@@ -749,12 +749,12 @@ var saveProject = function(){
 
     }
   }
-  //EventsÅŒã‚ÌƒRƒ“ƒ}íœˆ—
-  json = json.substr(0, json.length-2);//ƒRƒ“ƒ}+‰üsƒR[ƒh
+  //Eventsæœ€å¾Œã®ã‚³ãƒ³ãƒå‰Šé™¤å‡¦ç†
+  json = json.substr(0, json.length-2);//ã‚³ãƒ³ãƒ+æ”¹è¡Œã‚³ãƒ¼ãƒ‰
 
   json += "]";
 
-  Ext.Msg.alert("•Û‘¶‚µ‚Ü‚µ‚½I");
+  Ext.Msg.alert("ä¿å­˜ã—ã¾ã—ãŸï¼");
 
   return json;
 }
@@ -766,10 +766,10 @@ var saveProject = function(){
 var loadProject = function() {
 
   var request = new XMLHttpRequest();
-  request.open("GET", "localhost:3000/events.json", true);
+  request.open("GET", "http://localhost:3000/events.json");
   request.onreadystatechange = function() {
     if (request.readyState == 4 && request.status == 200) {
-      //óMŠ®—¹‚Ìˆ—
+      //å—ä¿¡å®Œäº†æ™‚ã®å‡¦ç†
       //var result = document.getElementById("result_get");
       var text = document.createTextNode(decodeURI(request.responseText));
       //result.appendChild(text);
@@ -788,7 +788,7 @@ var getObjectById = function (items, id){
   var i;
   for(i = 0; i < items.length; i++){
     if(items[i].id == id)
-	   return items[i];
+   return items[i];
   }
   return null;
 }
@@ -825,11 +825,12 @@ var numberCheck = function( input, msg ){
 
 var toHankaku = function ( input ){
   
-  var val =  input.replace( /[‚O-‚X]/g, function(s) {
+  /*var val =  input.replace( /[ï¼-ï¼™]/g, function(s) {
     return String.fromCharCode(s.charCodeAt(0) - 65248);
   });
-
-  return val;
+ */
+  //return val;
+  return input;
 }
 
 /**
